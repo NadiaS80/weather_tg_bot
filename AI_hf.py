@@ -1,5 +1,6 @@
 import requests
 import datetime
+import os
 
 
 class AI_HF:
@@ -17,7 +18,7 @@ class AI_HF:
         text (str): Input text, either city name for translation or raw weather data for commentary.
     """
     API_URL = 'https://router.huggingface.co/v1/chat/completions'
-    HUGGING_FACE_TOKEN = 'YOUR-KEY'
+    HUGGING_FACE_TOKEN = os.getenv("HUGGING_FACE_TOKEN")
 
     def __init__(self, text):
         self.text = text
