@@ -3,7 +3,9 @@ from telebot import types
 from weather_cod import Weather
 import time
 
-bot = telebot.TeleBot('YOUR-KEY')
+BOT_TOKEN = 'YOUR-KEY'
+
+bot = telebot.TeleBot(BOT_TOKEN)
 
 menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
 weather_today = types.KeyboardButton('Погода на сегодня')
