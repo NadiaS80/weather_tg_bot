@@ -2,9 +2,9 @@ import telebot
 from telebot import types
 from weather_cod import Weather
 import time
+import os
 
-BOT_TOKEN = 'YOUR-KEY'
-
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = telebot.TeleBot(BOT_TOKEN)
 
 menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
