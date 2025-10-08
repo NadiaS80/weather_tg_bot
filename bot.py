@@ -1,6 +1,7 @@
 import telebot
 from telebot import types
 from weather_cod import Weather
+import time
 
 bot = telebot.TeleBot('YOUR-KEY')
 
@@ -48,4 +49,9 @@ def get_weather(message):
         bot.send_message(message.chat.id, f"Ошибка 😕: {e}")
 
 
-bot.infinity_polling()
+while True:
+    try:
+        bot.infinity_polling(timeout=10, long_polling_timeout=5)
+    except Exception as e:
+        print(f"Ошибка polling: {e}. Перезапуск через 5 секунд...")
+        time.sleep(5)

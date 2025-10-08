@@ -1,0 +1,4 @@
+requests
+pyTelegramBotAPI
+transformers
+emoji

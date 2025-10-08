@@ -1,137 +1,142 @@
 # 🌤 WeatherBot – Telegram Weather Forecast Bot
 
-Welcome to **WeatherBot**! This is a simple, cozy Telegram bot that gives you weather forecasts for any city in Russia 🌍.  
-It translates Russian city names to English, fetches data from Visual Crossing API, and gives you a beautiful weather summary with emojis 🌈.
+Welcome to **WeatherBot**! A cozy Telegram bot that gives **detailed, human-friendly weather forecasts** for any city 🌍.  
+It supports Russian city names, fixes typos, detects the correct country, fetches weather data from Visual Crossing, and adds **fun, engaging commentary** via HuggingFace AI 😎.
 
 ---
 
 ## ⚡ Features
 
-- 🌡 Shows **temperature** (min, max, average, feels like)  
-- ☔ Displays **precipitation** info (type, probability, amount)  
-- 🌬 Provides **wind data** (speed, gusts, direction)  
-- ☁ Cloudiness & visibility  
-- 🌅 Sunrise & sunset times  
-- 🌞 UV index  
-- 📝 Short and long **weather descriptions**  
-- 🌐 Supports **Russian city names**, automatically translating them to English  
-
----
-
-## 🛠 Installation
-
-1. Clone this repository:  
-   ```bash
-   git clone <your-repo-url>
-   ```
-
-## 🛠 Installation
-
-2. Navigate to the project folder:  
-```bash
-cd WeatherBot
-```
-
-## 🛠 Install Dependencies
-
-Make sure you have **Python 3.10+** installed. Then install the required packages:  
-```bash
-pip install -r requirements.txt
-```
-
-## 📦 Dependencies Include
-
-- `requests` – for fetching API data  
-- `telebot` (pyTelegramBotAPI) – for Telegram bot interface  
-- `transformers` – for MarianMT translation models  
-- `emoji` – for displaying emojis  
-
----
-
-## 🔑 Setup
-
-1. Get a **Telegram bot token** from [BotFather](https://t.me/BotFather)  
-2. Replace `'YOUR-KEY'` in `bot.py` with your token  
-3. Get a **Visual Crossing API key** from [Visual Crossing](https://www.visualcrossing.com/)  
-4. Replace `'YOUR-KEY'` in `weather_cod.py` with your API key  
-
----
-
-## 📝 Usage
-
-1. Run the bot:  
-```bash
-python bot.py
-```
-
-## 📝 Usage
-
-1. Open Telegram and start your bot by typing `/start`  
-2. Click **"Погода на сегодня"**  
-3. Enter the **city name in Russian**  
-4. Receive a **detailed weather forecast** with emojis 😎  
+- 🌡 **Temperature** – min, max, average, feels like  
+- ☔ **Precipitation** – type, probability, amount  
+- 🌬 **Wind** – speed, gusts, direction  
+- ☁ **Cloudiness & Visibility**  
+- 🌅 **Sunrise & Sunset** times  
+- 🌞 **UV Index**  
+- 📝 **Weather commentary** – HuggingFace AI converts raw data into short, human-readable summaries with humor and emojis  
+- 🌐 **Smart city input handling** – supports Russian and fuzzy city names, automatically translates, corrects spelling, detects country, and ensures accurate API requests
 
 ---
 
 ## 📂 File Structure
 
-- `weather_cod.py` – Contains `Weather` and `Translate` classes for fetching and translating weather data 🌍  
-- `bot.py` – Telegram bot interface, uses `Weather` class to send forecasts 💬  
+```text
+WeatherBot/
+│
+├─ bot.py             # Telegram bot interface 💬
+├─ weather_cod.py     # Weather class: fetches, formats, and sends weather data 🌍
+├─ AI_hf.py           # HuggingFace AI integration for human-friendly commentary 🤖
+├─ requirements.txt   # Python dependencies 📦
+└─ README.md          # Project overview 📖
+```
+
+---
+
+## 🛠 Installation & Setup
+
+1. **Clone this repository:**
+```bash
+git clone https://github.com/NadiaS80/weather_tg_bot.git
+```
+
+## Navigate to the project folder:
+```bash
+cd WeatherBot
+```
+
+## Install dependencies (Python 3.10+ required):
+```bash
+pip install -r requirements.txt
+```
+
+## 🛠 Setup API Tokens
+
+- **Telegram bot token** → replace `'YOUR-KEY'` in `bot.py`  
+- **Visual Crossing API key** → replace `'YOUR-KEY'` in `weather_cod.py`  
+- **HuggingFace API token** → replace `YOUR-KEY`  in `AI_hf.py`
+
+> 🔒 **Security:** Do not share your API keys publicly. Keep your token files safe.
+
+---
+
+## 📝 Usage
+
+1. **Run the bot:**
+```bash
+python bot.py
+```
+2. **Open Telegram** → start your bot → type `/start` → click **"Погода на сегодня"** → enter the city name in Russian.
+
+3. **Receive a detailed weather forecast with:**
+   - Automatic city name correction & country detection  
+   - Human-friendly commentary from HuggingFace AI  
+   - Emoji-enhanced, fun, and readable weather summary 🌈  
+
+**📦 Sample output:**
+```
+🌍 Прогноз погоды на 08.10.2025:
+
+🌡️ Температура:
+  • Минимальная — 19°C (ощущается 19°C)
+  • Средняя — 20°C (ощущается 20°C)
+  • Максимальная — 22°C (ощущается 22°C)
+
+☔️ Осадки:
+  • Тип — дождь
+  • Вероятность — 100.0%
+  • Количество — 13.0 мм
+
+🌬️ Ветер:
+  • Скорость — 6.6 м/с
+  • Порывы — 9.4 м/с
+  • Направление — 178.2°
+
+☁️ Облачность:
+  • Облачность — 100.0%
+  • Видимость — 6.9 км
+
+🌅 Солнце:
+  • Восход — 05:26
+  • Закат — 17:54
+  • УФ-индекс — 1.0
+
+🎤 О погоде:
+Сегодня в Рио-де-Жанейро небо решило устроить настоящий водный марафон — дождь идёт без передышки, но хотя бы тёплый, почти как в парке Тихука после тропического ливня 🌧️🥵. Температура держится на комфортных 20°C, так что можно смело брать зонт и наслаждаться свежестью — тем более, что к вечеру закат всё равно прорвётся сквозь тучи 🌇. Только ветер, похоже, тренируется для карнавала — порывы до 9 м/с! 💨
+```
+
+
+---
+
+## 📦 Dependencies
+
+- `requests` – fetch API data  
+- `telebot` (`pyTelegramBotAPI`) – Telegram bot interface  
+- `transformers` – MarianMT translation models  
+- `emoji` – for emojis in forecasts  
+
+---
+
+## 🚀 Roadmap / Future Plans
+
+- 🌡 **Real-Time Weather** – instant weather for current or any city worldwide  
+- 🌅 **Tomorrow’s Forecast** – detailed next-day predictions  
+- 📆 **Multi-Day Forecasts** – 3-day & weekly summaries  
+- ⏰ **Scheduled Notifications** – daily weather alerts at chosen time  
+- 🌐 **Optional Geolocation** – detect location automatically for instant forecasts  
+- 🗣️ **Language Options** – Russian & English support  
+- 🌠 **Long-Term Integrations** – NASA & other APIs, visual weather content  
+
+💡 **Goal:** Make WeatherBot smarter, faster, and more personal 🌈✨
 
 ---
 
 ## 🤝 Contributing
 
-Feel free to **fork**, **improve**, or make your own version!  
-Suggestions and PRs are welcome 🚀  
-
----
-
-## ⚠ Notes
-
-- The bot **needs an active internet connection**  
-- Free MarianMT models are used, so the **first translation might take a few seconds**  
-- Make sure your **API key for Visual Crossing** is valid 🗝️  
-
----
-
-## 🚀 Future Plans / Roadmap
-
-Our WeatherBot is evolving! Here's what you can expect in upcoming updates:  
-
-### 🌡️ Real-Time Weather  
-- Get instant weather for your current city or any city worldwide.  
-- Perfect for checking conditions before heading out.  
-
-### 🌅 Tomorrow’s Forecast  
-- Receive detailed predictions for the next day.  
-- Know in advance if you need an umbrella, jacket, or sunglasses.  
-
-### 📆 Multi-Day Forecasts  
-- 3-day and weekly weather summaries.  
-- Plan your week ahead with confidence.  
-
-### ⏰ Scheduled Notifications  
-- Set personalized alerts to receive daily forecasts at a chosen time.  
-- Example: get tomorrow’s weather every evening at 8 PM automatically.  
-
-### 🌐 Optional Geolocation Integration (Future)  
-- Auto-detect your location for instant forecasts.  
-- Useful for on-the-go updates without typing the city name.  
-
-### 🗣️ Language Options  
-- English & Russian supported.  
-- Easily switch languages for international users.  
-
-### 🌠 Long-Term Integrations  
-- API integrations with NASA or other weather-related services.  
-- Add visual content like weather images, icons, or seasonal illustrations.  
-
-💡 These features are designed to make WeatherBot smarter, faster, and more personal! Stay tuned for updates! 🌈✨
-
+- Fork, improve, or create your own version  
+- PRs and suggestions are welcome 🚀  
 
 ---
 
 ## 🎉 Enjoy!
 
-Now you can have weather updates **anywhere, anytime**, with a touch of emoji magic 🌈✨
+Get weather updates **anywhere, anytime**, with HuggingFace-powered commentary and emoji magic 🌈✨

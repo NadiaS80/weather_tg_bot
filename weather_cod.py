@@ -3,7 +3,7 @@ import requests
 import datetime
 from transformers import MarianMTModel, MarianTokenizer
 import emoji
-
+from AI_hf import AI_HF
 
 class Translate:
     """
@@ -97,24 +97,37 @@ class Weather:
 
     def __init__(self, location):
         """
-        Initialize a Weather object.
+        Initialize the weather bot with a given location.
 
         Args:
-            location (str): City name in Russian.
+            location (str): The city name provided by the user, in any language or format. 
+                        It will be translated to a standardized English format 
+                        (City, Country) using AI_HF translator.
+
+        Attributes:
+            location (str): The translated and standardized city name in the format "City, Country".
         """
-        translate = Translate(location)
-        self.location = translate.translate_word_ru_en()
+        translate_ai = AI_HF(location)
+        self.location = translate_ai.translate()
 
     def weather_today(self, date=None):
         """
-        Get the weather forecast for a specific date, or today if no date is provided.
+        Fetch and format the weather forecast for the specified date for the initialized location.
+
+        This method retrieves weather data from an API (OpenWeatherMap or similar), 
+        processes it into human-readable information including temperature, precipitation, 
+        wind, cloud coverage, visibility, sunrise/sunset, and UV index. 
+        It also generates a conversational weather summary using AI.
 
         Args:
-            date (datetime.date, optional): Date for the forecast. Defaults to today.
+            date (datetime.date, optional): The target date for the weather forecast. 
+                                            Defaults to today's date if None.
 
         Returns:
-            str: Formatted weather forecast including temperature, precipitation, wind, cloudiness, visibility,
-                 sunrise/sunset, and textual description.
+            str: A formatted string containing:
+                - Weather forecast summary with emojis
+                - Detailed metrics (temperature, precipitation, wind, cloudiness, etc.)
+                - AI-generated human-friendly commentary on the weather.
         """
         if date is None:
             date = datetime.date.today() 
@@ -132,10 +145,10 @@ class Weather:
         feel_temp_med = json_weather['days'][0]['feelslike'] - 273.15
         feel_temp_max = json_weather['days'][0]['feelslikemax'] - 273.15
         feel_temp_min = json_weather['days'][0]['feelslikemin'] - 273.15
-        humidity = json_weather['days'][0]['humidity'] # air humidity as a percentage
-        precip = json_weather['days'][0]['precip'] # the amount of precipitation in millimeters
-        precipprob = json_weather['days'][0]['precipprob'] # percentage probability of precipitation %
-        preciptype = json_weather['days'][0]['preciptype'] # rain/snow/mixed precipitation, precipitation type (if not, returns None)
+        humidity = json_weather['days'][0]['humidity'] # влажность воздуха в процентах
+        precip = json_weather['days'][0]['precip'] # количество выпавших осадков в миллиметрах
+        precipprob = json_weather['days'][0]['precipprob'] # вероятность осадков в процентах %
+        preciptype = json_weather['days'][0]['preciptype'] # дождь/снег/смешанные осадки, тип осадков (если нет, то возвращает None)
         if preciptype is None:
             preciptype = 'Нет'
         elif isinstance(preciptype, list):
@@ -144,20 +157,16 @@ class Weather:
         else:
             preciptype = Translate(preciptype).translate_word_en_ru()
         windspeed = json_weather['days'][0]['windspeed']
-        windgust = json_weather['days'][0]['windgust'] # wind gusts, maximum speed (meters per second)
-        winddir = json_weather['days'][0]['winddir'] # wind direction in degrees, where 0 is north
-        cloudcover = json_weather['days'][0]['cloudcover'] # percentage of the sky covered with clouds
-        visibility = json_weather['days'][0]['visibility'] # Visibility: Kilometers, the distance at which objects can be seen
-        sunrise = json_weather['days'][0]['sunrise'] # sunrise time
-        sunset = json_weather['days'][0]['sunset'] # sunset time
-        uvindex = json_weather['days'][0]['uvindex'] # the level of ultraviolet radiation
-        conditions = json_weather['days'][0]['conditions'] # a brief description of the weather conditions
-        translate = Translate(conditions)
-        conditions = translate.translate_word_en_ru()
-        description = json_weather['days'][0]['description'] # detailed description of the weather
-        translate = Translate(description)
-        description = translate.translate_word_en_ru()
-        weather_forecast = (
+        windgust = json_weather['days'][0]['windgust'] # порывы ветра, максимальная скорость (метров в секунду)
+        winddir = json_weather['days'][0]['winddir'] # направление ветра в градусах, где 0 — север
+        cloudcover = json_weather['days'][0]['cloudcover'] # процент неба, покрытого облаками 
+        visibility = json_weather['days'][0]['visibility'] # Видимость: Километры, расстояние, на котором можно разглядеть объекты
+        sunrise = json_weather['days'][0]['sunrise'] # время восхода солнца
+        sunset = json_weather['days'][0]['sunset'] # время захода солнца
+        uvindex = json_weather['days'][0]['uvindex'] # уровень ультрафиолетового излучения
+        conditions = json_weather['days'][0]['conditions'] # краткое описание погодных условий
+        description = json_weather['days'][0]['description'] # подробное описание погоды
+        base_forecast = (
             f"\n🌍 Прогноз погоды на {str(date.strftime('%d.%m.%Y')).replace('-', '.')}:\n\n"
             f"{emoji.emojize(':thermometer:')} Температура:\n"
             f"  • Минимальная — {temp_min:.0f}°C (ощущается {feel_temp_min:.0f}°C)\n"
@@ -179,7 +188,9 @@ class Weather:
             f"  • Закат — {sunset[:5]}\n"
             f"  • УФ-индекс — {uvindex}\n\n"
             f"{emoji.emojize(':microphone:')} О погоде:\n"
-            f"  - {conditions}\n"
-            f"  - {description}\n"
         )
+        info_forecast = base_forecast + (f"{conditions}, {description}")
+        ai = AI_HF(info_forecast)
+        ai_forecast = ai.formating_answer(self.location, date1)
+        weather_forecast = base_forecast + ai_forecast
         return weather_forecast
