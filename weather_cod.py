@@ -5,6 +5,7 @@ from transformers import MarianMTModel, MarianTokenizer
 import emoji
 from AI_hf import AI_HF
 
+
 class Translate:
     """
     Class for translating text between Russian and English using MarianMT models.
@@ -92,7 +93,7 @@ class Weather:
         location (str): City name in English.
     """
 
-    API_key = 'YOUR-KEY'
+    API_KEY = os.getenv("WEATHER_API_KEY")
     url_weather = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
 
     def __init__(self, location):

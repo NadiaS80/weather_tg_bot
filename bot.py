@@ -3,6 +3,7 @@ from telebot import types
 from weather_cod import Weather
 import time
 
+
 BOT_TOKEN = 'YOUR-KEY'
 
 bot = telebot.TeleBot(BOT_TOKEN)

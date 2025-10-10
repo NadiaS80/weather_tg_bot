@@ -2,6 +2,7 @@ import requests
 import datetime
 
 
+
 class AI_HF:
     """
     AI_HF class for interacting with a HuggingFace-based AI model to:
@@ -17,7 +18,7 @@ class AI_HF:
         text (str): Input text, either city name for translation or raw weather data for commentary.
     """
     API_URL = 'https://router.huggingface.co/v1/chat/completions'
-    HUGGING_FACE_TOKEN = 'YOUR-KEY'
+    HUGGING_FACE_TOKEN = "YOUR-KEY"
 
     def __init__(self, text):
         self.text = text
