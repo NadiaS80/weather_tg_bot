@@ -93,7 +93,7 @@ class Weather:
         location (str): City name in English.
     """
 
-    API_KEY = os.getenv("WEATHER_API_KEY")
+    API_KEY = "YOUR-KEY"
     url_weather = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
 
     def __init__(self, location):
