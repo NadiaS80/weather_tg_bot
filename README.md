@@ -74,7 +74,7 @@ python bot.py
    - **"Погода на сегодня"** → get today’s forecast  
    - **"Погода на завтра"** → get tomorrow’s forecast  
 
-3. **Enter a city name (in Russian)** — the bot automatically translates it and fetches data.
+3. **Enter a city name (in any language)** — the bot automatically translates it and fetches data.
 
 4. **Receive a detailed weather forecast with:**
    - Automatic city correction & country detection  
