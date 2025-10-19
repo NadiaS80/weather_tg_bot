@@ -16,38 +16,61 @@ menu.add(weather_today)
 @bot.message_handler(commands=['start'])
 def start_message(message):
     """
-    Handle the /start command. Sends a welcome message and displays the custom keyboard.
+    Handles the /start command sent by the user.
+
+    Sends a welcome message and displays a custom keyboard with weather options.
 
     Args:
-        message (telebot.types.Message): Incoming Telegram message object.
+        message (telebot.types.Message): Incoming Telegram message object containing
+                                         chat and user information.
     """
     bot.send_message(message.chat.id, "Привет 🌤️\nЯ бот прогноза погоды! Хочешь узнать погоду?", reply_markup=menu)
 
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
     """
-    Handle all incoming text messages. If the user selects 'Погода на сегодня',
-    asks for the city name and registers the next step handler.
+    Handles all text messages sent to the bot.
+
+    Detects whether the user requested today's or tomorrow's forecast and
+    forwards control to the appropriate weather handler.
 
     Args:
         message (telebot.types.Message): Incoming Telegram message object.
     """
     if message.text == 'Погода на сегодня':
         bot.send_message(message.chat.id, 'Напиши название города, погоду в котором хочешь узнать 🌍')
-        bot.register_next_step_handler(message, get_weather)
+        bot.register_next_step_handler(message, today_get_weather)
+    elif message.text == 'Погода на завтра':
+        bot.send_message(message.chat.id, 'Напиши название города, погоду в котором хочешь узнать 🌍')
+        bot.register_next_step_handler(message, tomorrow_get_weather)
 
-def get_weather(message):
+
+def today_get_weather(message):
     """
-    Fetch the weather forecast for the specified city and send it to the user.
-    Handles any exceptions that occur during the process.
+    Processes the user's input city and sends the weather forecast for today.
 
     Args:
-        message (telebot.types.Message): Incoming Telegram message object.
+        message (telebot.types.Message): Telegram message containing the city name.
     """
     try:
         city = message.text
         w = Weather(city)
         weather = w.weather_today()
+        bot.send_message(message.chat.id, weather)
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Ошибка 😕: {e}")
+
+def tomorrow_get_weather(message):
+    """
+    Processes the user's input city and sends the weather forecast for tomorrow.
+
+    Args:
+        message (telebot.types.Message): Telegram message containing the city name.
+    """
+    try:
+        city = message.text
+        w = Weather(city)
+        weather = w.weather_tommorow()
         bot.send_message(message.chat.id, weather)
     except Exception as e:
         bot.send_message(message.chat.id, f"Ошибка 😕: {e}")
@@ -59,3 +82,4 @@ while True:
     except Exception as e:
         print(f"Ошибка polling: {e}. Перезапуск через 5 секунд...")
         time.sleep(5)
+
