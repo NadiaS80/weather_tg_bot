@@ -96,42 +96,31 @@ class Weather:
     API_KEY = "YOUR-KEY"
     url_weather = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
 
+
     def __init__(self, location):
         """
-        Initialize the weather bot with a given location.
+        Initializes a Weather instance with a translated location name.
 
         Args:
-            location (str): The city name provided by the user, in any language or format. 
-                        It will be translated to a standardized English format 
-                        (City, Country) using AI_HF translator.
-
-        Attributes:
-            location (str): The translated and standardized city name in the format "City, Country".
+            location (str): The original city or location name provided by the user.
+                            It will be translated via the AI_HF class to match
+                            the format expected by the weather API.
         """
         translate_ai = AI_HF(location)
         self.location = translate_ai.translate()
 
-    def weather_today(self, date=None):
-        """
-        Fetch and format the weather forecast for the specified date for the initialized location.
 
-        This method retrieves weather data from an API (OpenWeatherMap or similar), 
-        processes it into human-readable information including temperature, precipitation, 
-        wind, cloud coverage, visibility, sunrise/sunset, and UV index. 
-        It also generates a conversational weather summary using AI.
+    def _day_get_weather(self, date):
+        """
+        Retrieves detailed weather information for a specific date and location.
 
         Args:
-            date (datetime.date, optional): The target date for the weather forecast. 
-                                            Defaults to today's date if None.
+            date (datetime.date): The date for which the weather data should be retrieved.
 
         Returns:
-            str: A formatted string containing:
-                - Weather forecast summary with emojis
-                - Detailed metrics (temperature, precipitation, wind, cloudiness, etc.)
-                - AI-generated human-friendly commentary on the weather.
+            str: A formatted string containing temperature, wind, precipitation,
+                 humidity, visibility, and other weather details for the given day.
         """
-        if date is None:
-            date = datetime.date.today() 
         date1 = date
         params = {'location': self.location,
           'key': self.API_key,
@@ -194,4 +183,37 @@ class Weather:
         ai = AI_HF(info_forecast)
         ai_forecast = ai.formating_answer(self.location, date1)
         weather_forecast = base_forecast + ai_forecast
+        return weather_forecast
+
+
+    def weather_today(self, date=None):
+        """
+        Gets the weather forecast for the current day.
+
+        Args:
+            date (datetime.date, optional): A specific date for the forecast. Defaults to today.
+
+        Returns:
+            str: A formatted weather report for the current day.
+        """
+        if date is None:
+            date = datetime.date.today()
+        weather_forecast = self._day_get_weather(date)
+        return weather_forecast
+
+
+    def weather_tommorow(self, date=None):
+        """
+        Gets the weather forecast for the next day.
+
+        Args:
+            date (datetime.date, optional): A specific date for the forecast. Defaults to tomorrow.
+
+        Returns:
+            str: A formatted weather report for the next day.
+        """
+        if date is None:
+            today = datetime.date.today() 
+            date = datetime.timedelta(1) + today
+        weather_forecast = self._day_get_weather(date)
         return weather_forecast
